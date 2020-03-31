@@ -40,3 +40,14 @@ create sequence seq_banking
     nocache;        /* 캐쉬 사용여부 */
     
 commit;
+
+update banking_tb set balance=balance-2000 where account='gg';
+
+
+
+
+
+
+
+
+
