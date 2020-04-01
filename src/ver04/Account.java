@@ -21,6 +21,6 @@ abstract public class Account implements Serializable{
 		System.out.println("계좌번호:"+ account);
 		System.out.println("고객이름:"+ name);
 		System.out.println("잔고:"+ balance);
-		System.out.println("전체계좌정보 출력이 완료되었습니다.");
+//		System.out.println("전체계좌정보 출력이 완료되었습니다.");
 	}
 }
