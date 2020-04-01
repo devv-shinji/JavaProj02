@@ -1,6 +1,7 @@
 package ver04;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,9 +11,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 
-
 public class AccountManager implements CustomSpecialRate {
-//	Account[] account;
 	int numOfaccount;
 	HashSet<Account> set = new HashSet<Account>();
 	
@@ -40,11 +39,10 @@ public class AccountManager implements CustomSpecialRate {
 		String iCredit; //신용등급
 		
 		int iChoice; //메뉴선택
-		
 		boolean searchFlag = false;
-		Iterator<Account> itr = set.iterator();
 		
 		try {
+			Iterator<Account> itr = set.iterator();
 			Scanner scan1 = new Scanner(System.in);
 			
 			System.out.println("--계좌선택--");
@@ -53,21 +51,21 @@ public class AccountManager implements CustomSpecialRate {
 			iChoice = scan1.nextInt();
 			
 			Scanner scan2 = new Scanner(System.in);
-			System.out.println("계좌번호:");
+			System.out.print("계좌번호:");
 			iAccount = scan2.nextLine();
-			
-			System.out.println("고객이름:");
-			iName = scan2.nextLine();
 			
 			//중복 허용 여부 확인
 			while(itr.hasNext()) {
 				Account account = itr.next();
-				if(iName.equals(account.name)) {
-					System.out.println("동일한 이름이 존재합니다. 계속 진행하시겠습니까? Y:1, N:2");
+				if(iAccount.equals(account.account)) {
+					System.out.println("동일한 계좌가 존재합니다. 갱신하시겠습니까? Y:1, N:2");
 					int num = scan1.nextInt();
 					
 					if(num==1) {
 						searchFlag = true;
+						itr.remove();
+//						set.remove(account); //
+						break;
 					}
 					else {
 						searchFlag = false;
@@ -76,10 +74,13 @@ public class AccountManager implements CustomSpecialRate {
 				}
 			}
 			
-			System.out.println("잔고:");
+			System.out.print("고객이름:");
+			iName = scan2.nextLine();
+			
+			System.out.print("잔고:");
 			iBalance = scan2.nextInt();
 			
-			System.out.println("기본이자(%)정수로입력:");
+			System.out.print("기본이자(%)정수로입력:");
 			iInterest = scan2.nextInt();
 			
 			//신용등급 
@@ -90,7 +91,7 @@ public class AccountManager implements CustomSpecialRate {
 				set.add(account1);
 				break;
 			case 2:
-				System.out.println("신용등급(A,B,C등급):");
+				System.out.print("신용등급(A,B,C등급):");
 				iCredit = scan3.nextLine();
 				
 				HighCreditAccount account2 = new HighCreditAccount(iAccount, iName, iBalance, iInterest, iCredit);
@@ -102,7 +103,6 @@ public class AccountManager implements CustomSpecialRate {
 		catch(InputMismatchException e) {
 			System.out.println("입력형식이 맞지 않습니다.");
 		}
-		
 	}
 		
 	//입금
@@ -117,10 +117,10 @@ public class AccountManager implements CustomSpecialRate {
 		Iterator<Account> itr = set.iterator();
 		
 		try {
-			System.out.println("계좌번호:");
+			System.out.print("계좌번호:");
 			searchAccount = scan.nextLine();
 		
-			System.out.println("입금액:");
+			System.out.print("입금액:");
 			iBalance = scan.nextDouble();
 			
 			if (iBalance>0 && iBalance%500==0) { //입금액은 양수와 500원 단위로만 가능
@@ -138,13 +138,13 @@ public class AccountManager implements CustomSpecialRate {
 						else {
 							HighCreditAccount accountH = (HighCreditAccount)account;
 							//신용등급별 이율
-							if (accountH.creditLevel.equals("A")) {
+							if (accountH.creditLevel.equalsIgnoreCase("A")) {
 								iCredit = 7;
 							}
-							else if(accountH.creditLevel.equals("B")) {
+							else if(accountH.creditLevel.equalsIgnoreCase("B")) {
 								iCredit = 4;
 							}
-							else if(accountH.creditLevel.equals("C")) {
+							else if(accountH.creditLevel.equalsIgnoreCase("C")) {
 								iCredit = 2;
 							}
 							//이자 포함 계산
@@ -172,7 +172,7 @@ public class AccountManager implements CustomSpecialRate {
 		String searchAccount;
 		boolean searchFlag = false;
 		
-		System.out.println("계좌번호:");
+		System.out.print("계좌번호:");
 		searchAccount = scan.nextLine();
 		
 		Iterator<Account> itr = set.iterator();
@@ -180,7 +180,7 @@ public class AccountManager implements CustomSpecialRate {
 		while(itr.hasNext()) {
 			Account account = itr.next();
 			if(searchAccount.equals(account.account)) {
-				System.out.println("출금액:");
+				System.out.print("출금액:");
 				iBalance = scan.nextInt();
 				
 				if (iBalance<account.balance) { //출금은 잔고보다 적은 금액일 때 가능
@@ -199,11 +199,11 @@ public class AccountManager implements CustomSpecialRate {
 					System.out.println(" - NO: 출금요청 취소");
 					
 					String yesORno = scan1.nextLine();
-					if(yesORno.equals("YES")) {
+					if(yesORno.equalsIgnoreCase("YES")) {
 						account.balance = 0;
 						System.out.println("출금이 완료되었습니다.");
 					}
-					else if(yesORno.equals("NO")) {
+					else if(yesORno.equalsIgnoreCase("NO")) {
 						System.out.println("출금이 취소되었습니다.");
 						break;
 					}
@@ -217,6 +217,8 @@ public class AccountManager implements CustomSpecialRate {
 		for(Account ac : set){
 			ac.showAccInfo();
 		}
+		System.out.println("--------");
+		System.out.println("전체계좌정보 출력이 완료되었습니다.");
 	}
 	
 	//데이터 로드
@@ -227,6 +229,9 @@ public class AccountManager implements CustomSpecialRate {
 			
 			HashSet<Account> account = (HashSet<Account>)in.readObject();
 			set = account;
+		}
+		catch(FileNotFoundException e) {
+			System.out.println("파일을 찾을 수 없습니다.");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

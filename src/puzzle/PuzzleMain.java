@@ -16,9 +16,10 @@ public class PuzzleMain implements direction {
 	
 	//키보드입력
 	public static int direction_key() {
-		System.out.println("좌:A, 우:D, 상:W, 하:S");
-		System.out.println("방향입력>>");
-		String key = scan.nextLine();
+		System.out.println("[이  동] 좌:A, 우:D, 상:W, 하:S");
+		System.out.println("[종  료] 아무 키나 누르면 종료됩니다.");
+		System.out.print("키입력>>");
+		String key = scan.next();
 		
 		if (key.equalsIgnoreCase("A")) {
 			return 1;
@@ -33,6 +34,8 @@ public class PuzzleMain implements direction {
 			return 4;
 		}
 		else {
+			System.out.println("종료되었습니다.");
+			System.exit(0);
 			return 0;
 		}
 	}
@@ -70,7 +73,6 @@ public class PuzzleMain implements direction {
 					return false;
 				}
 			}
-			System.out.println();
 		}
 		return true;		
 	}
@@ -129,6 +131,7 @@ public class PuzzleMain implements direction {
 		
 		while(!is_ending(puzzle)) {
 			try {
+				
 				print_puzzle(puzzle);
 				key = direction_key();
 				
@@ -158,6 +161,7 @@ public class PuzzleMain implements direction {
 			catch(ArrayIndexOutOfBoundsException e) {
 			}
 		}
+		System.out.println();
 		System.out.println("=====퍼즐 완성=====");
 		print_puzzle(puzzle);
 		restart();
@@ -167,6 +171,7 @@ public class PuzzleMain implements direction {
 	public static void restart() {
 		System.out.println("재시작 하시겠습니까? Y:재시작");
 		System.out.println("종료하려면 아무키나 누르세요.");
+		scan.nextLine();
 		String restart = scan.nextLine();
 		
 		if(restart.equalsIgnoreCase("Y")) {

@@ -10,14 +10,15 @@ public class BankingSystemVer04 implements MenuChoice {
 
 	public static void main(String[] args) {
 		AccountManager manager = new AccountManager(); 
-		manager.loadData();
+		manager.loadData(); //기존 저장된 데이터 불러오기
 		
 		while (true) {
-			Scanner scan = new Scanner(System.in);
 			manager.showMenu();
+			Scanner scan = new Scanner(System.in);
 			
 			try {
 				int choice = scan.nextInt();
+				scan.nextLine();//버퍼날림
 				//1~5사이 이외의 숫자 입력 시 예외처리
 				try {
 					if(choice<1 || choice>5) {
@@ -26,7 +27,7 @@ public class BankingSystemVer04 implements MenuChoice {
 					}
 				}
 				catch(MenuSelectException e) {
-					System.out.println("예외메세지:"+ e.getMessage());
+					System.out.println(e.getMessage());
 				}
 				//1~5 메뉴 구분
 				switch (choice) {
